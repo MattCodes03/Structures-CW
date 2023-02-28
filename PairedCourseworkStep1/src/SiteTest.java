@@ -8,7 +8,7 @@ public class SiteTest {
 		
 		do
 		{
-			option = Input.getInteger("What would you like to do?\n 1. Add new Page\n 2. Display Site Map\n 0. Quit\nChoice: ");	
+			option = Input.getInteger("What would you like to do?\n 1. Add new Page\n 2. Display Home Page\n 0. Quit\nChoice: ");	
 			switch(option)
 			{
 			case 0:
