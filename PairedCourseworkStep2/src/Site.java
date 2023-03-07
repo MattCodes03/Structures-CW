@@ -43,6 +43,7 @@ public class Site {
 				else {
 					this.root.down = newPage;
 					this.current = newPage;
+					newPage.up = this.root;
 				}
 			}else 
 			{
@@ -104,6 +105,49 @@ public class Site {
 		return true;
 	}
 	
+	public void moveUp() 
+	{
+		if(this.current.up == null) 
+		{
+			System.out.println("Cannot go up from Home page!");
+		}else 
+		{
+			this.current = this.current.up;	
+		}
+		
+	}
+	
+	public String displayCurrentPage() 
+	{
+		String result = "";
+		
+		PageNode current = this.current;
+		
+		result += this.current.name;
+		
+		while(current != null) 
+		{
+			
+			if(current.down == null) 
+			{
+				if(current.across == null) 
+				{
+					result += "\n\tNo links on page.";
+				}else 
+				{
+					result += "\n\t"+ current.name;
+				}
+				current = current.across;
+			}else 
+			{
+				current = current.down;
+			}
+
+		}
+		
+		return result;
+	}
+	
 	@Override
 	public String toString() 
 	{
@@ -123,6 +167,7 @@ public class Site {
 			{
 				current = current.down;
 			}
+			
 		}
 		
 		return result;

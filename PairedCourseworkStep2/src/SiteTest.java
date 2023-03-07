@@ -9,7 +9,7 @@ public class SiteTest {
 		do
 		{
 			try{
-				option = Input.getInteger("What would you like to do?\n 1. Add new Page\n 2. Display Home Page\n 0. Quit\nChoice: ");
+				option = Input.getInteger("What would you like to do?\n 1. Add new Page\n 2. Display Site Map\n 3. Display Current Page\n 4. Move Up\n 5. Move Down\n 0. Quit\nChoice: ");
 			}
 			catch(NumberFormatException e){
 				option = 10;
@@ -32,6 +32,15 @@ public class SiteTest {
 				break;
 			case 2:
 				System.out.println("\n"+website+"\n");
+				break;
+			case 3:
+				System.out.println(website.displayCurrentPage());
+				break;
+			case 4:
+				website.moveUp();
+				break;
+			case 5:
+				//website.moveDown();
 				break;
 			default:
 				System.out.println("\nError; Not a valid option! Please try again!");
