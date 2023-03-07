@@ -37,8 +37,13 @@ public class Site {
 		{
 			if(this.root.down == null) 
 			{
-				this.root.down = newPage;
-				this.current = newPage;
+				if (!checkIfNameUnique(newPage)){
+					throw new NameNotUniqueException();
+				}
+				else {
+					this.root.down = newPage;
+					this.current = newPage;
+				}
 			}else 
 			{
 				this.addPage(this.current, newPage);
@@ -54,12 +59,16 @@ public class Site {
 		
 		while(!insertionFound) 
 		{
-			if(current.across == null) 
+			if(current.across == null)
 			{
-				current.across = newPage;
-				this.current = newPage;
-				insertionFound = true;
-				
+				if(!checkIfNameUnique(newPage)){
+					throw new NameNotUniqueException();
+				}
+				else {
+					current.across = newPage;
+					this.current = newPage;
+					insertionFound = true;	
+				}
 			}else 
 			{
 				this.addPage(current.across, newPage);
@@ -67,16 +76,32 @@ public class Site {
 		}
 	}
 	
-	private void checkIfNameUnique(PageNode newPage)
+	private boolean checkIfNameUnique(PageNode newPage)
 	{
 		
 		PageNode current = this.root;
+		PageNode curr_dir = null; 
 		
 		while(current != null) 
 		{
-			
+			if(newPage.name.compareToIgnoreCase(current.name)==0) {
+				return false;
+			}
+			else {
+				if(current.down != null && current.down != curr_dir) {
+					curr_dir = current;
+					current = current.down;
+				}
+				else if(current.across!=null){
+					current = current.across;
+				}
+				else {
+					current = current.up;
+					curr_dir = current;
+				}
+			}
 		}
-		
+		return true;
 	}
 	
 	@Override
