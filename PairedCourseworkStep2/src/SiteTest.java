@@ -5,6 +5,7 @@ public class SiteTest {
 		Site website = new Site();
 		boolean running = true;
 		int option;
+		String pageName = "";
 		
 		do
 		{
@@ -12,8 +13,9 @@ public class SiteTest {
 				option = Input.getInteger("What would you like to do?\n 1. Add new Page\n 2. Display Site Map\n 3. Display Current Page\n 4. Move Up\n 5. Move Down\n 0. Quit\nChoice: ");
 			}
 			catch(NumberFormatException e){
-				option = 10;
+				option = 100; // Sets Option to large number so default Not Valid Option message is thrown if user inputs something that is not an integer
 			}
+			
 			switch(option)
 			{
 			case 0:
@@ -21,7 +23,7 @@ public class SiteTest {
 				System.out.println("\nProgram quit successfully!");
 				break;
 			case 1:
-				String pageName = Input.getString("\nName of Page: ");
+				pageName = Input.getString("\nName of Page: ");
 				try {
 					website.addPage(pageName);
 					System.out.println(pageName+" added to site.\n");
@@ -34,13 +36,26 @@ public class SiteTest {
 				System.out.println("\n"+website+"\n");
 				break;
 			case 3:
-				System.out.println(website.displayCurrentPage());
+				try 
+				{
+					System.out.println(website.displayCurrentPage());
+				}catch(Site.PageNoLinksException e) 
+				{
+					System.out.println("\tPage has no links");
+				}
 				break;
 			case 4:
 				website.moveUp();
 				break;
 			case 5:
-				//website.moveDown();
+				pageName = Input.getString("\nWhich page would you like to go to: ");
+				try 
+				{
+				website.moveDown(pageName);
+				}catch(Site.PageNotFoundException e) 
+				{
+					System.out.println(pageName +" Page does not exist in the site!");
+				}
 				break;
 			default:
 				System.out.println("\nError; Not a valid option! Please try again!");

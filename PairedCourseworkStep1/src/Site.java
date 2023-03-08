@@ -2,10 +2,10 @@ public class Site {
 	
 	class PageNode
 	{
-		String name;
-		PageNode up;
-		PageNode down;
-		PageNode across;
+		private String name;
+		private PageNode up;
+		private PageNode down;
+		private PageNode across;
 		
 		PageNode(String name)
 		{

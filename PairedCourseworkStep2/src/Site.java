@@ -2,10 +2,10 @@ public class Site {
 	
 	class PageNode
 	{
-		String name;
-		PageNode up;
-		PageNode down;
-		PageNode across;
+		private String name;
+		private PageNode up;
+		private PageNode down;
+		private PageNode across;
 		
 		PageNode(String name)
 		{
@@ -16,7 +16,11 @@ public class Site {
 		}
 	}
 	
-	public static class NameNotUniqueException extends Exception{}
+	public static class NameNotUniqueException extends Exception {}
+	
+	public static class PageNotFoundException extends Exception {}
+	
+	public static class PageNoLinksException extends Exception {}
 	
 	protected PageNode root;
 	protected PageNode current;
@@ -81,7 +85,8 @@ public class Site {
 	{
 		
 		PageNode current = this.root;
-		PageNode curr_dir = null; 
+		PageNode curr_dir = null; /* Current Directory will store the PageNode we have traversed down, 
+									this is done to avoid infinite looping when we traverse back up the site tree */
 		
 		while(current != null) 
 		{
@@ -117,7 +122,20 @@ public class Site {
 		
 	}
 	
-	public String displayCurrentPage() 
+	public void moveDown(String pageName) throws PageNotFoundException
+	{
+		/* 
+		 * 1. Check if current.down == null
+		 * 2. If this.current.down is null RETURN "Page has no links"
+		 * 3. If this.current.down is not null set current = this.current.down
+		 * 4. while(found = False) check if current.across.name == PageName
+		 * 5. If pageName == current.across.name then set this.current = current.across and set found = true
+		 * 6. If pageName != current.across.name then set current = current.across
+		 * 7. If current.across == null then page does not exist so set found = false and RETURN "Page does not exit"
+		 * */
+	}
+	
+	public String displayCurrentPage() throws PageNoLinksException
 	{
 		String result = "";
 		
@@ -125,37 +143,45 @@ public class Site {
 		
 		result += this.current.name;
 		
+		if(current.down == null && current.across == null) 
+		{
+			System.out.println(result);
+			throw new PageNoLinksException();
+		}
+		
 		while(current != null) 
 		{
-			
 			if(current.down == null) 
 			{
-				if(current.across == null) 
-				{
-					result += "\n\tNo links on page.";
-				}else 
-				{
-					result += "\n\t"+ current.name;
-				}
+				result += "\n\t"+ current.name;
 				current = current.across;
-			}else 
+				
+			}else
 			{
+				result += "\n\t"+ current.name;
 				current = current.down;
 			}
-
+			
 		}
 		
 		return result;
 	}
 	
 	@Override
-	public String toString() 
+	public String toString()
 	{
 		String result = "";
 		
+		// We know we are starting at the root which will not have any across so we can just start from the root.down page
 		PageNode current = this.root.down;
 		
 		result += this.root.name;
+		
+		if(this.root.down == null) 
+		{
+			result += "\n\tPage has no links";
+			current = null;
+		}
 		
 		while(current != null) 
 		{
