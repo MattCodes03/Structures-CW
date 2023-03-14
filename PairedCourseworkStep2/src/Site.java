@@ -41,14 +41,13 @@ public class Site {
 		{
 			if(this.root.down == null) 
 			{
-				if (!checkIfNameUnique(newPage)){
+				if (!checkIfUnique(this.root, newPage)){
 					throw new NameNotUniqueException();
 				}
 				else {
+					newPage.up = this.root;
 					this.root.down = newPage;
 					this.current = newPage;
-					newPage.up = this.root;
-					System.out.println("New Page: "+newPage.up.name+newPage.down+newPage.across);
 				}
 			}else 
 			{
@@ -60,24 +59,22 @@ public class Site {
 	private void addPage(PageNode current, PageNode newPage) throws NameNotUniqueException
 	{
 		boolean insertionFound = false;
-	
-		
+
 		while(!insertionFound) 
 		{
 			if(current.across == null)
 			{
-				if(!checkIfNameUnique(newPage))
+				if(!checkIfUnique(this.root, newPage))
 				{
 					throw new NameNotUniqueException();
 				}
 				else 
 				{
 					
+					newPage.up = current.up;
 					current.across = newPage;
 					this.current = newPage;
 					insertionFound = true;	
-					
-					System.out.println("Adding Page");
 				}
 			}else 
 			{
@@ -86,33 +83,34 @@ public class Site {
 		}
 	}
 	
-	private boolean checkIfNameUnique(PageNode newPage)
+	
+	private boolean checkIfUnique(PageNode current, PageNode newPage) 
 	{
-		
-		PageNode current = this.root;
-		PageNode curr_dir = null; /* Current Directory will store the PageNode we have traversed down, 
-									this is done to avoid infinite looping when we traverse back up the site tree */
-		
-		while(current != null) 
+		if(current == null) 
 		{
-			if(newPage.name.compareToIgnoreCase(current.name)==0) {
-				return false;
-			}
-			else {
-				if(current.down != null && current.down != curr_dir) {
-					curr_dir = current;
-					current = current.down;
-				}
-				else if(current.across!=null){
-					current = current.across;
-				}
-				else {
-					current = current.up;
-					curr_dir = current;
-				}
-			}
+			return false;
 		}
+		
+		System.out.println("Current: "+ current.name +" New Page: "+ newPage.name);
+		
+		if(newPage.name.compareToIgnoreCase(current.name)==0) {
+			System.out.println("Name is same");
+			return false;
+		}
+		else 
+		{
+			if(current == this.root) 
+			{
+				this.checkIfUnique(current.down, newPage);
+			}else 
+			{
+				this.checkIfUnique(current.across, newPage);
+			}
+			
+		}
+		
 		return true;
+			
 	}
 	
 	public void moveUp() 
