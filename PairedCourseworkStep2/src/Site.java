@@ -1,6 +1,6 @@
 public class Site {
 	
-	class PageNode
+	private class PageNode
 	{
 		private String name;
 		private PageNode up;
@@ -48,6 +48,7 @@ public class Site {
 					this.root.down = newPage;
 					this.current = newPage;
 					newPage.up = this.root;
+					System.out.println("New Page: "+newPage.up.name+newPage.down+newPage.across);
 				}
 			}else 
 			{
@@ -59,20 +60,24 @@ public class Site {
 	private void addPage(PageNode current, PageNode newPage) throws NameNotUniqueException
 	{
 		boolean insertionFound = false;
-		
-		// Name Not Unique check if current.name == newPage.name
+	
 		
 		while(!insertionFound) 
 		{
 			if(current.across == null)
 			{
-				if(!checkIfNameUnique(newPage)){
+				if(!checkIfNameUnique(newPage))
+				{
 					throw new NameNotUniqueException();
 				}
-				else {
+				else 
+				{
+					
 					current.across = newPage;
 					this.current = newPage;
 					insertionFound = true;	
+					
+					System.out.println("Adding Page");
 				}
 			}else 
 			{
@@ -114,15 +119,16 @@ public class Site {
 	{
 		if(this.current.up == null) 
 		{
-			System.out.println("Cannot go up from Home page!");
+			System.out.println("Cannot go up from Home page!\n");
 		}else 
 		{
 			this.current = this.current.up;	
+			System.out.println("Current Page is now: "+ this.current.name +"\n");
 		}
 		
 	}
 	
-	public void moveDown(String pageName) throws PageNotFoundException
+	public void moveDown() throws PageNotFoundException, PageNoLinksException
 	{
 		/* 
 		 * 1. Check if current.down == null
@@ -133,9 +139,38 @@ public class Site {
 		 * 6. If pageName != current.across.name then set current = current.across
 		 * 7. If current.across == null then page does not exist so set found = false and RETURN "Page does not exit"
 		 * */
+	
+		PageNode current = this.current;
+		boolean found = false;
+		String pageName;
+		
+		if(current.down == null) 
+		{
+			throw new PageNoLinksException();
+		}else 
+		{
+			pageName = Input.getString("\nWhich page would you like to go to: ");
+			current = this.current.down;
+			while(!found) 
+			{
+				if(pageName.compareToIgnoreCase(current.name) == 0)
+				{
+					this.current = current;
+					System.out.println("Current Page is now: "+ this.current.name +"\n");
+					found = true;
+				}else 
+				{
+					if(current.across == null) 
+					{
+						throw new PageNotFoundException();
+					}
+					current = current.across;
+				}
+			}
+		}
 	}
 	
-	public String displayCurrentPage() throws PageNoLinksException
+	public String getCurrentPage() throws PageNoLinksException
 	{
 		String result = "";
 		

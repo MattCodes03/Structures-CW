@@ -38,23 +38,25 @@ public class SiteTest {
 			case 3:
 				try 
 				{
-					System.out.println(website.displayCurrentPage());
+					System.out.println(website.getCurrentPage()+"\n");
 				}catch(Site.PageNoLinksException e) 
 				{
-					System.out.println("\tPage has no links");
+					System.out.println("\tPage has no links\n");
 				}
 				break;
 			case 4:
 				website.moveUp();
 				break;
 			case 5:
-				pageName = Input.getString("\nWhich page would you like to go to: ");
 				try 
 				{
-				website.moveDown(pageName);
+				website.moveDown();
 				}catch(Site.PageNotFoundException e) 
 				{
-					System.out.println(pageName +" Page does not exist in the site!");
+					System.out.println(pageName +" Page does not exist in the site!\n");
+				}catch(Site.PageNoLinksException e) 
+				{
+					System.out.println("Current page has no links!\n");
 				}
 				break;
 			default:
