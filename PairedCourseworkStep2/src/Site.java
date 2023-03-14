@@ -39,79 +39,45 @@ public class Site {
 
 		if (this.root != null) 
 		{
-			if(this.root.down == null) 
-			{
-				if (!checkIfUnique(this.root, newPage)){
-					throw new NameNotUniqueException();
-				}
-				else {
-					newPage.up = this.root;
-					this.root.down = newPage;
-					this.current = newPage;
-				}
-			}else 
-			{
-				this.addPage(this.current, newPage);
-			}
+			this.addPage(this.root, newPage);
 		}
 	}
 	
 	private void addPage(PageNode current, PageNode newPage) throws NameNotUniqueException
 	{
-		boolean insertionFound = false;
-
-		while(!insertionFound) 
-		{
-			if(current.across == null)
+			if(this.root.down == null) 
 			{
-				if(!checkIfUnique(this.root, newPage))
-				{
-					throw new NameNotUniqueException();
-				}
-				else 
-				{
+				this.root.down = newPage;
 					
-					newPage.up = current.up;
-					current.across = newPage;
-					this.current = newPage;
-					insertionFound = true;	
+				newPage.up = this.root;
+				this.current = newPage;
+				
+			}
+			else if(current.down == null) {
+					
+				this.current.down = newPage;
+				newPage.up = this.current;
+					
+				this.current = newPage;
+						
+			}else if(current.across == null)
+			{
+			
+				this.current.across = newPage;	
+				this.current = newPage;
+				this.current.up = this.root;
+			}else 
+			{
+				if(current.down == null)
+				{
+					this.addPage(current.down, newPage);
 				}
-			}else 
-			{
-				this.addPage(current.across, newPage);
+				else {
+					this.addPage(current.across, newPage);
+				}
 			}
 		}
-	}
 	
-	
-	private boolean checkIfUnique(PageNode current, PageNode newPage) 
-	{
-		if(current == null) 
-		{
-			return false;
-		}
-		
-		System.out.println("Current: "+ current.name +" New Page: "+ newPage.name);
-		
-		if(newPage.name.compareToIgnoreCase(current.name)==0) {
-			System.out.println("Name is same");
-			return false;
-		}
-		else 
-		{
-			if(current == this.root) 
-			{
-				this.checkIfUnique(current.down, newPage);
-			}else 
-			{
-				this.checkIfUnique(current.across, newPage);
-			}
-			
-		}
-		
-		return true;
-			
-	}
 	
 	public void moveUp() 
 	{
@@ -127,6 +93,7 @@ public class Site {
 	}
 	
 	public void moveDown() throws PageNotFoundException, PageNoLinksException
+
 	{
 		/* 
 		 * 1. Check if current.down == null
@@ -142,13 +109,13 @@ public class Site {
 		boolean found = false;
 		String pageName;
 		
-		if(current.down == null) 
+		if(this.current.down == null) 
 		{
 			throw new PageNoLinksException();
 		}else 
 		{
 			pageName = Input.getString("\nWhich page would you like to go to: ");
-			current = this.current.down;
+			current = current.down;
 			while(!found) 
 			{
 				if(pageName.compareToIgnoreCase(current.name) == 0)
@@ -171,63 +138,57 @@ public class Site {
 	public String getCurrentPage() throws PageNoLinksException
 	{
 		String result = "";
-		
 		PageNode current = this.current;
 		
-		result += this.current.name;
+		result += this.traversal(current);
 		
-		if(current.down == null && current.across == null) 
+		if(current.down == null) 
 		{
-			System.out.println(result);
-			throw new PageNoLinksException();
-		}
-		
-		while(current != null) 
-		{
-			if(current.down == null) 
-			{
-				result += "\n\t"+ current.name;
-				current = current.across;
-				
-			}else
-			{
-				result += "\n\t"+ current.name;
-				current = current.down;
-			}
-			
+			result += "\n\tPage has no links";
 		}
 		
 		return result;
 	}
 	
+	
+	
+	
+	public String traversal(PageNode current) 
+	{
+		String results = "";
+		
+		if(current != null) 
+		{
+			results += "\n\t"+current.name;
+			
+			if(current.down != null) 
+			{
+				results += this.traversal(current.down);
+			}
+			
+			if(current.across != null) 
+			{
+				results += this.traversal(current.across);
+			}	
+		}
+		
+        return results;
+    }
+	
 	@Override
 	public String toString()
 	{
 		String result = "";
+		PageNode current = this.root;
 		
-		// We know we are starting at the root which will not have any across so we can just start from the root.down page
-		PageNode current = this.root.down;
+		result += this.traversal(current);
 		
-		result += this.root.name;
-		
-		if(this.root.down == null) 
+		if(current.down == null) 
 		{
 			result += "\n\tPage has no links";
-			current = null;
 		}
 		
-		while(current != null) 
-		{
-			result += "\n\t"+ current.name;
-			if(current.down == null) 
-			{
-				current = current.across;
-			}else 
-			{
-				current = current.down;
-			}
-			
-		}
+		
 		
 		return result;
 	}
