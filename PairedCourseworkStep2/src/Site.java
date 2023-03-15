@@ -150,8 +150,15 @@ public class Site {
 		return result;
 	}
 	
-	
-	
+	public boolean hasParentNode(PageNode page) 
+	{
+		if(page.up != null && page.up != this.root) 
+		{
+			return true;
+		}
+		
+		return false;
+	}
 	
 	public String traversal(PageNode current) 
 	{
@@ -159,7 +166,17 @@ public class Site {
 		
 		if(current != null) 
 		{
-			results += "\n\t"+current.name;
+			if(current == this.root) 
+			{
+				results += current.name;
+			}else if(hasParentNode(current)) 
+			{
+				results += "\n\t\t"+current.name;
+			}else 
+			{
+				results += "\n\t"+current.name;
+			}
+			
 			
 			if(current.down != null) 
 			{
