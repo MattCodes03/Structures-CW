@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Site {
 	
 	private class PageNode
@@ -21,6 +23,8 @@ public class Site {
 	public static class PageNotFoundException extends Exception {}
 	
 	public static class PageNoLinksException extends Exception {}
+	
+	public static class NoParentPageException extends Exception {}
 	
 	protected PageNode root;
 	protected PageNode current;
@@ -47,26 +51,52 @@ public class Site {
 	{
 			if(this.root.down == null) 
 			{
-				this.root.down = newPage;
+				if(this.checkIfNameUnique(newPage)) 
+				{
 					
-				newPage.up = this.root;
-				this.current = newPage;
-				
+					this.root.down = newPage;
+					
+					newPage.up = this.root;
+					this.current = newPage;
+					
+				}else 
+				{
+					throw new NameNotUniqueException();
+				}
+		
 			}
 			else if(current.down == null) {
-					
-				this.current.down = newPage;
-				newPage.up = this.current;
-					
-				this.current = newPage;
+				
+				if(this.checkIfNameUnique(newPage)) 
+				{
+					this.current.down = newPage;
+					newPage.up = this.current;
 						
-			}else if(current.across == null)
+					this.current = newPage;
+				}else 
+				{
+					throw new NameNotUniqueException();
+				}
+				
+						
+			}
+			else if(current.across == null)
 			{
-			
-				this.current.across = newPage;	
-				this.current = newPage;
-				this.current.up = this.root;
-			}else 
+				
+				if(this.checkIfNameUnique(newPage)) 
+				{
+					print("Line 91");
+					this.current.across = newPage;	
+					this.current = newPage;
+					this.current.up = this.root;
+				
+				}else 
+				{
+					throw new NameNotUniqueException();
+				}
+				
+			}
+			else 
 			{
 				if(current.down == null)
 				{
@@ -79,11 +109,11 @@ public class Site {
 		}
 	
 	
-	public void moveUp() 
+	public void moveUp() throws NoParentPageException
 	{
 		if(this.current.up == null) 
 		{
-			System.out.println("Cannot go up from Home page!\n");
+			throw new NoParentPageException();
 		}else 
 		{
 			this.current = this.current.up;	
@@ -160,6 +190,55 @@ public class Site {
 		return false;
 	}
 	
+	// TODO: Remove once debugging and testing is complete, built for convenience
+	public void print(String args) 
+	{
+		System.out.println(args);
+	}
+	
+	public boolean checkIfNameUnique(PageNode newPage) 
+	{
+		
+		String results = this.getPageNames(this.root);
+		String[] names = results.split(",");
+		
+		
+		for(String name : names) 
+		{
+			if(name.compareToIgnoreCase(newPage.name) == 0) 
+			{
+				return false;
+			}
+		}
+		
+		return true;
+		
+	}
+	
+	public String getPageNames(PageNode current) 
+	{
+		String results = "";
+
+		if(current != null) 
+		{
+			results += ","+current.name;
+		
+			if(current.down != null) 
+			{
+				results += this.getPageNames(current.down);
+			}
+			
+				
+			if(current.across != null) 
+			{
+				results += this.getPageNames(current.across);
+			}
+		}
+		
+		return results;
+	}
+	
+	
 	public String traversal(PageNode current) 
 	{
 		String results = "";
@@ -171,10 +250,10 @@ public class Site {
 				results += current.name;
 			}else if(hasParentNode(current)) 
 			{
-				results += "\n\t\t"+current.name;
+				results += "\n\t\t"+current.name; // Two Tabs
 			}else 
 			{
-				results += "\n\t"+current.name;
+				results += "\n\t"+current.name; // One Tab
 			}
 			
 			

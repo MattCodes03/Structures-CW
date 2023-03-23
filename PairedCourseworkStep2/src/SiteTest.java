@@ -10,7 +10,7 @@ public class SiteTest {
 		do
 		{
 			try{
-				option = Input.getInteger("What would you like to do?\n 1. Add new Page\n 2. Display Site Map\n 3. Display Current Page\n 4. Move Up\n 5. Move Down\n 0. Quit\nChoice: ");
+				option = Input.getInteger("What would you like to do?\n 1. Add new Page\n 2. Display Home Page\n 3. Display Current Page\n 4. Move Up\n 5. Move Down\n 0. Quit\nChoice: ");
 			}
 			catch(NumberFormatException e){
 				option = 100; // Sets Option to large number so default Not Valid Option message is thrown if user inputs something that is not an integer
@@ -45,7 +45,13 @@ public class SiteTest {
 				}
 				break;
 			case 4:
-				website.moveUp();
+				try 
+				{
+					website.moveUp();
+				}catch(Site.NoParentPageException e)
+				{
+					System.out.println("Cannot move up from Home page!\n");
+				}
 				break;
 			case 5:
 				try 
@@ -53,7 +59,7 @@ public class SiteTest {
 				website.moveDown();
 				}catch(Site.PageNotFoundException e) 
 				{
-					System.out.println(pageName +" Page does not exist in the site!\n");
+					System.out.println("Page does not exist in the site!\n");
 				}catch(Site.PageNoLinksException e) 
 				{
 					System.out.println("Current page has no links!\n");
