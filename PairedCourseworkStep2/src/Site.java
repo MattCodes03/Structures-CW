@@ -85,7 +85,6 @@ public class Site {
 				
 				if(this.checkIfNameUnique(newPage)) 
 				{
-					print("Line 91");
 					this.current.across = newPage;	
 					this.current = newPage;
 					this.current.up = this.root;
@@ -180,15 +179,6 @@ public class Site {
 		return result;
 	}
 	
-	public boolean hasParentNode(PageNode page) 
-	{
-		if(page.up != null && page.up != this.root) 
-		{
-			return true;
-		}
-		
-		return false;
-	}
 	
 	// TODO: Remove once debugging and testing is complete, built for convenience
 	public void print(String args) 
@@ -196,6 +186,10 @@ public class Site {
 		System.out.println(args);
 	}
 	
+	/*
+	 * This function will create an array of all page names in the site based on the string provided by the getPageNames function, 
+	 * we then loop through this array to make sure the new page name is not a duplicate
+	 */
 	public boolean checkIfNameUnique(PageNode newPage) 
 	{
 		
@@ -215,6 +209,10 @@ public class Site {
 		
 	}
 	
+	/*
+	 * This function acts similar to the traversal function but it will append all page names from the root of the site rather than a specified current page
+	 * This function does not use any formatting and is only used for checking if new pages are unique inside the checkIfUnique function
+	 */
 	public String getPageNames(PageNode current) 
 	{
 		String results = "";
@@ -238,7 +236,23 @@ public class Site {
 		return results;
 	}
 	
+	public boolean hasParentNode(PageNode page) 
+	{
+		if(page.up != null && page.up != this.root) 
+		{
+			return true;
+		}
+		
+		return false;
+	}
 	
+	
+	/*
+	 * Traversal function will traverse through the entire site map adding the name of each web page to a results string 
+	 * that will them be displayed either in the toString method or getCurrentPage method
+	 * We have made use of a hasParentNode function to determine whether or not we need to tab the page name, 
+	 * we also add a check to see if this.current is the current page we are traversing through this is to avoid adding tabs to the top level page when we display the current page
+	 */
 	public String traversal(PageNode current) 
 	{
 		String results = "";
@@ -250,10 +264,17 @@ public class Site {
 				results += current.name;
 			}else if(hasParentNode(current)) 
 			{
-				results += "\n\t\t"+current.name; // Two Tabs
+				results += "\n\t\t"+current.name;
 			}else 
 			{
-				results += "\n\t"+current.name; // One Tab
+				if(current == this.current) 
+				{
+					results += "\n"+current.name;
+				}else 
+				{
+					results += "\n\t"+current.name;
+				}
+				
 			}
 			
 			
@@ -262,7 +283,7 @@ public class Site {
 				results += this.traversal(current.down);
 			}
 			
-			if(current.across != null) 
+			if(current.across != null && current != this.current) 
 			{
 				results += this.traversal(current.across);
 			}	

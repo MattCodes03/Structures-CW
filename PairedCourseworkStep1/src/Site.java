@@ -113,6 +113,12 @@ public class Site {
 		
 		result += this.root.name;
 		
+		if(this.root.down == null) 
+		{
+			result += "\n\tPage has no links";
+		}
+		
+		
 		while(current != null) 
 		{
 			result += "\n\t"+ current.name;

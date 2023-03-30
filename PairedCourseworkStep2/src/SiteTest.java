@@ -62,7 +62,7 @@ public class SiteTest {
 					System.out.println("Page does not exist in the site!\n");
 				}catch(Site.PageNoLinksException e) 
 				{
-					System.out.println("Current page has no links!\n");
+					System.out.println("Cannot move down! Current page has no links!\n");
 				}
 				break;
 			default:
