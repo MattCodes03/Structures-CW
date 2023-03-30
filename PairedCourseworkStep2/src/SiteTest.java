@@ -60,6 +60,9 @@ public class SiteTest {
 				}catch(Site.PageNotFoundException e) 
 				{
 					System.out.println("Page does not exist in the site!\n");
+				}catch(Site.CannotMoveToCurrentPageException e)
+				{
+					System.out.println("Already on this page cannot move down to it!\n");
 				}catch(Site.PageNoLinksException e) 
 				{
 					System.out.println("Cannot move down! Current page has no links!\n");

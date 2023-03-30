@@ -26,6 +26,8 @@ public class Site {
 	
 	public static class NoParentPageException extends Exception {}
 	
+	public static class CannotMoveToCurrentPageException extends Exception {}
+	
 	protected PageNode root;
 	protected PageNode current;
 	
@@ -121,7 +123,7 @@ public class Site {
 		
 	}
 	
-	public void moveDown() throws PageNotFoundException, PageNoLinksException
+	public void moveDown() throws PageNotFoundException, PageNoLinksException, CannotMoveToCurrentPageException
 
 	{
 		/* 
@@ -145,6 +147,12 @@ public class Site {
 		{
 			pageName = Input.getString("\nWhich page would you like to go to: ");
 			current = current.down;
+			
+			if(pageName.compareToIgnoreCase(this.current.name) == 0) 
+			{
+				throw new CannotMoveToCurrentPageException();
+			}
+			
 			while(!found) 
 			{
 				if(pageName.compareToIgnoreCase(current.name) == 0)
@@ -169,7 +177,7 @@ public class Site {
 		String result = "";
 		PageNode current = this.current;
 		
-		result += this.traversal(current);
+		result += this.traverseCurrentPage(current);
 		
 		if(current.down == null) 
 		{
@@ -178,6 +186,39 @@ public class Site {
 		
 		return result;
 	}
+	
+	public String traverseCurrentPage(PageNode current) 
+	{
+		String results = "";
+		
+		if(current != null) 
+		{
+			if(current == this.current) 
+			{
+				results += current.name;
+			}else if(hasParentNode(current)) 
+			{
+				results += "\n\t\t"+current.name;
+			}else 
+			{
+				results += "\n\t"+current.name;
+			}
+			
+			
+			if(current.down != null) 
+			{
+				results += this.traverseSite(current.down);
+			}
+			
+			if(current.across != null && current != this.current) 
+			{
+				results += this.traverseSite(current.across);
+			}	
+		}
+		
+        return results;
+	}
+    
 	
 	
 	// TODO: Remove once debugging and testing is complete, built for convenience
@@ -253,7 +294,7 @@ public class Site {
 	 * We have made use of a hasParentNode function to determine whether or not we need to tab the page name, 
 	 * we also add a check to see if this.current is the current page we are traversing through this is to avoid adding tabs to the top level page when we display the current page
 	 */
-	public String traversal(PageNode current) 
+	public String traverseSite(PageNode current) 
 	{
 		String results = "";
 		
@@ -267,25 +308,18 @@ public class Site {
 				results += "\n\t\t"+current.name;
 			}else 
 			{
-				if(current == this.current) 
-				{
-					results += "\n"+current.name;
-				}else 
-				{
-					results += "\n\t"+current.name;
-				}
-				
+				results += "\n\t"+current.name;
 			}
 			
 			
 			if(current.down != null) 
 			{
-				results += this.traversal(current.down);
+				results += this.traverseSite(current.down);
 			}
 			
-			if(current.across != null && current != this.current) 
+			if(current.across != null) 
 			{
-				results += this.traversal(current.across);
+				results += this.traverseSite(current.across);
 			}	
 		}
 		
@@ -298,7 +332,7 @@ public class Site {
 		String result = "";
 		PageNode current = this.root;
 		
-		result += this.traversal(current);
+		result += this.traverseSite(current);
 		
 		if(current.down == null) 
 		{
