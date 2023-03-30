@@ -207,12 +207,12 @@ public class Site {
 			
 			if(current.down != null) 
 			{
-				results += this.traverseSite(current.down);
+				results += this.traverseCurrentPage(current.down);
 			}
 			
 			if(current.across != null && current != this.current) 
 			{
-				results += this.traverseSite(current.across);
+				results += this.traverseCurrentPage(current.across);
 			}	
 		}
 		
