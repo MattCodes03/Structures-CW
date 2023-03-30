@@ -1,9 +1,0 @@
-/Input.class
-/Site$CannotMoveToCurrentPageException.class
-/Site$NameNotUniqueException.class
-/Site$NoParentPageException.class
-/Site$PageNoLinksException.class
-/Site$PageNode.class
-/Site$PageNotFoundException.class
-/Site.class
-/SiteTest.class
