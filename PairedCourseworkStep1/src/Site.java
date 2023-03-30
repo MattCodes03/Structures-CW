@@ -2,10 +2,10 @@ public class Site {
 	
 	class PageNode
 	{
-		String name;
-		PageNode up;
-		PageNode down;
-		PageNode across;
+		private String name;
+		private PageNode up;
+		private PageNode down;
+		private PageNode across;
 		
 		PageNode(String name)
 		{
@@ -112,6 +112,12 @@ public class Site {
 		PageNode current = this.root.down;
 		
 		result += this.root.name;
+		
+		if(this.root.down == null) 
+		{
+			result += "\n\tPage has no links";
+		}
+		
 		
 		while(current != null) 
 		{
