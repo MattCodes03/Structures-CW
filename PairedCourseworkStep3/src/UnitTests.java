@@ -28,10 +28,38 @@ public class UnitTests {
 	@Test(expected = Site.NameNotUniqueException.class)
 	public void nameUnique() throws Site.NameNotUniqueException 
 	{
-		website.addPage("Shop");
-		
+		website.addPage("Home");
 	}
 	
 	/* STEP 1 TESTS */
+	
+	/* STEP 2 TESTS */
+	
+	@Test
+	public void displayCurrentPage() throws Site.PageNoLinksException 
+	{
+		assertEquals("Home\n\tPage has no links", website.getCurrentPage());
+	}
+	
+	@Test
+	public void displayCurrentPageAfterAddingPage() throws Site.PageNoLinksException, Site.NameNotUniqueException
+	{
+		website.addPage("Explore");
+		assertEquals("Explore\n\tPage has no links", website.getCurrentPage());
+	}
+	
+	@Test(expected = Site.NoParentPageException.class)
+	public void moveUpFromHome() throws Site.NoParentPageException
+	{
+		website.moveUp();
+	}
+	
+	@Test(expected = Site.PageNoLinksException.class)
+	public void moveDownWithNoLinks() throws Site.PageNotFoundException, Site.PageNoLinksException, Site.CannotMoveToCurrentPageException
+	{
+		website.moveDown();
+	}
+	
+	/* STEP 2 TESTS */
 
 }
