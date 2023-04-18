@@ -45,70 +45,62 @@ public class Site {
 
 		if (this.root != null) 
 		{
-			this.addPage(this.root, newPage);
+			this.addPage(this.current, newPage);
+		}
+	}
+	
+	private void addPageDown(PageNode current, PageNode newPage) throws Site.NameNotUniqueException 
+	{
+		if(this.checkIfNameUnique(newPage)) 
+		{
+			
+			this.current.down = newPage;
+			this.current.down.up = current;
+			
+			// New Page Node
+			//this.current = newPage;
+			
+		}else 
+		{
+			throw new NameNotUniqueException();
+		}
+	}
+	
+	private void addPageAcross(PageNode current, PageNode newPage) throws Site.NameNotUniqueException
+	{
+		if(current.across == null) 
+		{
+			if(this.checkIfNameUnique(newPage)) 
+			{
+				
+				current.across = newPage;
+				current.across.up = current.up;
+				
+				// New Page Node
+				//this.current = newPage;
+				
+			}else 
+			{
+				throw new NameNotUniqueException();
+			}
+		}else 
+		{
+			this.addPageAcross(current.across, newPage);
 		}
 	}
 	
 	private void addPage(PageNode current, PageNode newPage) throws NameNotUniqueException
 	{
-			if(this.root.down == null) 
-			{
-				if(this.checkIfNameUnique(newPage)) 
-				{
-					
-					this.root.down = newPage;
-					
-					newPage.up = this.root;
-					this.current = newPage;
-					
-				}else 
-				{
-					throw new NameNotUniqueException();
-				}
-		
-			}
-			else if(current.down == null) {
+			if(current.down == null) {
 				
-				if(this.checkIfNameUnique(newPage)) 
-				{
-					this.current.down = newPage;
-					newPage.up = this.current;
-						
-					this.current = newPage;
-				}else 
-				{
-					throw new NameNotUniqueException();
-				}
-				
-						
-			}
-			else if(current.across == null)
+				this.addPageDown(current, newPage);
+			}		
+			else if(current.down != null)
 			{
 				
-				if(this.checkIfNameUnique(newPage)) 
-				{
-					this.current.across = newPage;	
-					this.current = newPage;
-					this.current.up = this.root;
-				
-				}else 
-				{
-					throw new NameNotUniqueException();
-				}
-				
+				this.addPageAcross(current.down, newPage);
 			}
-			else 
-			{
-				if(current.down == null)
-				{
-					this.addPage(current.down, newPage);
-				}
-				else {
-					this.addPage(current.across, newPage);
-				}
-			}
-		}
-	
+	}
 	
 	public void moveUp() throws NoParentPageException
 	{
