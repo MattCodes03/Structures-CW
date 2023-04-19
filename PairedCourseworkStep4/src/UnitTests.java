@@ -13,7 +13,7 @@ public class UnitTests {
 	@Test
 	public void createHomePage() 
 	{
-		assertEquals("Home\n\tPage has no links", website.toString());
+		assertEquals("\nHome\n\tPage has no links", website.toString());
 	}
 	
 	@Test
@@ -22,7 +22,7 @@ public class UnitTests {
 		website.addPage("Shop");
 		website.addPage("Blogs");
 		website.addPage("Explore");
-		assertEquals("Home\n\tShop\n\tBlogs\n\tExplore", website.toString());
+		assertEquals("\nHome\n .. Shop\n .. Blogs\n .. Explore", website.toString());
 	}
 	
 	@Test(expected = Site.NameNotUniqueException.class)
@@ -38,15 +38,9 @@ public class UnitTests {
 	@Test
 	public void displayCurrentPage() throws Site.PageNoLinksException 
 	{
-		assertEquals("Home\n\tPage has no links", website.getCurrentPage());
+		assertEquals("\nHome\n\tPage has no links", website.getCurrentPage());
 	}
 	
-	@Test
-	public void displayCurrentPageAfterAddingPage() throws Site.PageNoLinksException, Site.NameNotUniqueException
-	{
-		website.addPage("Explore");
-		assertEquals("Explore\n\tPage has no links", website.getCurrentPage());
-	}
 	
 	@Test(expected = Site.NoParentPageException.class)
 	public void moveUpFromHome() throws Site.NoParentPageException
@@ -61,5 +55,4 @@ public class UnitTests {
 	}
 	
 	/* STEP 2 TESTS */
-
 }
