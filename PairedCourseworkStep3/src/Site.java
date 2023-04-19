@@ -45,7 +45,7 @@ public class Site {
 
 		if (this.root != null) 
 		{
-			this.addPage(this.root, newPage);
+			this.addPage(this.current, newPage);
 		}
 	}
 	
@@ -55,7 +55,7 @@ public class Site {
 		{
 			
 			this.current.down = newPage;
-			this.current.down.up = this.root;
+			this.current.down.up = current;
 			
 			// New Page Node
 			//this.current = newPage;
@@ -74,7 +74,7 @@ public class Site {
 			{
 				
 				current.across = newPage;
-				current.across.up = this.root;
+				current.across.up = current.up;
 				
 				// New Page Node
 				//this.current = newPage;
@@ -101,7 +101,6 @@ public class Site {
 				this.addPageAcross(current.down, newPage);
 			}
 	}
-	
 	
 	public void moveUp() throws NoParentPageException
 	{
@@ -188,15 +187,14 @@ public class Site {
 		{
 			if(current == this.current) 
 			{
-				results += current.name;
-			}else if(hasParentNode(current)) 
-			{
-				results += "\n\t\t"+current.name;
+				results += "\n"+current.name;
 			}else 
 			{
-				results += "\n\t"+current.name;
+				int tabs = getTabs(current, 0);
+				String tabString = " "+"..".repeat(tabs) + " ";
+				
+				results += "\n"+tabString+current.name;
 			}
-			
 			
 			if(current.down != null) 
 			{
@@ -240,7 +238,6 @@ public class Site {
 		}
 		
 		return true;
-		
 	}
 	
 	/*
@@ -270,14 +267,19 @@ public class Site {
 		return results;
 	}
 	
-	public boolean hasParentNode(PageNode page) 
+	public int getTabs(PageNode page, int count) 
 	{
-		if(page.up != null && page.up != this.root) 
+		if(page != null) 
 		{
-			return true;
+			if(page.up != null) 
+			{
+				count++;
+				print(page.name+": "+count);
+				return getTabs(page.up, count);
+			}
 		}
 		
-		return false;
+		return count;
 	}
 	
 	
@@ -295,13 +297,13 @@ public class Site {
 		{
 			if(current == this.root) 
 			{
-				results += current.name;
-			}else if(hasParentNode(current)) 
-			{
-				results += "\n\t\t"+current.name;
+				results += "\n"+current.name;
 			}else 
 			{
-				results += "\n\t"+current.name;
+				int tabs = getTabs(current, 0);
+				String tabString = " "+"..".repeat(tabs) + " ";
+				
+				results += "\n"+tabString+current.name;
 			}
 			
 			
